@@ -1,0 +1,7 @@
+#place this in ~/.config/gpo-steal/config.yaml
+#
+#name of your repository
+repo: amyy
+
+#location to store repositories
+repo_location: /home/amelia/.local/share/gpo-steal
