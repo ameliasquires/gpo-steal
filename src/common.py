@@ -13,12 +13,14 @@ from typing import TypedDict
 REAL_REPO = ""
 REPOS_LOCATION = "/var/db/repos"
 REPO_LOC = ""
+ROOT = "sudo"
 
 try:
     with open(os.path.expanduser("~/.config/gpo-steal/config.yaml"), "r") as f:
         cfg = yaml.safe_load(f.read())
         REAL_REPO = cfg["repo"]
         REPO_LOC = cfg["repo_location"]
+        ROOT = cfg["elevation"]
 except FileNotFoundError:
     print("no configuration found, should be in ~/.config/gpo-steal/config.yaml")
     exit(1)
@@ -36,11 +38,6 @@ class repo_pair(TypedDict):
 repos = {}
 tracked = {}
 
-root = ""
-if not shutil.which("sudo") is None:
-    root = "sudo"
-if not shutil.which("doas") is None:
-    root = "doas"
 try:
     with open(REPO_CFG_LOC, "r") as f:
         repos = yaml.safe_load(f.read()) or repos
@@ -59,3 +56,8 @@ def save() -> None:
 
     with open(TRACKED_CFG_LOC, "w") as f:
         yaml.dump(tracked, f)
+
+def eexec(cmd) -> None:
+    run = f"{ROOT} sh -c '{cmd}'"
+    print(run)
+    os.system(run)

@@ -26,8 +26,10 @@ if len(sys.argv) == 1:
 match sys.argv[1]:
     case "sync" | "s":
         options = list(repos.keys())
-        name = questionary.select("which repository", options).ask()
-        sync_repos = [repos[name]]
+        name = questionary.select("which repository", ["all", *options]).ask()
+        sync_repos = repos.values()
+        if name != "all":
+            sync_repos = [repos[name]]
 
         sync(sync_repos)
 
@@ -108,7 +110,8 @@ match sys.argv[1]:
             print("no matches")
             exit(0)
         
-        copy.copy([use])
+        cmd = copy.copy([use])
+        eexec(cmd)
 
     case "r" | "rm":
         assert len(sys.argv) >= 3
